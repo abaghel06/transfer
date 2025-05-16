@@ -1,17 +1,44 @@
-def fileValidator(fileNames, identifiers):
-    for file in fileNames:
-        found = false
-        for identifier in indentifiers:
-            if identifier in file:
-                found=True
-                break
-        if not found:
-            raise ValueError(f"Filename '{file}' doesn't match any unique identifiers")
+import time
+import random
+from pynput.mouse import Controller as MouseController
+from pynput.keyboard import Controller as KeyboardController, Key
 
-        print("All files match")
+def move_mouse_and_type():
+    """
+    Simulates mouse movement and key presses to prevent the system from locking.
+    """
+    mouse = MouseController()
+    keyboard = KeyboardController()
 
+    try:
+        # Move the mouse cursor slightly
+        x, y = mouse.position
+        dx = random.randint(-5, 5)  # Small random movement
+        dy = random.randint(-5, 5)
+        mouse.position = (x + dx, y + dy)
 
-try:
-    fileValidator(fileList, idList)
-except ValueError as e:
-          print(f"Error: {e}")
+        # Press and release the Ctrl key
+        keyboard.press(Key.ctrl)
+        keyboard.release(Key.ctrl)
+
+        print("Mouse moved and Ctrl key pressed.")  # Added print statement for logging
+
+    except Exception as e:
+        print(f"An error occurred: {e}") #error logging
+
+def main():
+    """
+    Main function to run the script.  Added a try-except block to handle potential errors.
+    """
+    try:
+        while True:
+            move_mouse_and_type()
+            time.sleep(60 * 5)  # Move every 5 minutes (adjust as needed)
+    except KeyboardInterrupt:
+        print("Script stopped by user.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        print("Script stopped.")
+
+if __name__ == "__main__":
+    main()
