@@ -66,37 +66,33 @@ function pull_latest() {
 
 # Commit and push changes
 function push_changes() {
-    echo -e "\n${YELLOW}Detecting changes to commit...${NC}"
+    echo -e "\n${YELLOW}Preparing to push changes...${NC}"
 
-    if ! git diff --exit-code --quiet; then
-        git status
+    git status
 
-        while true; do
-            read -p "Do you want to commit and push these changes? (y/n): " -n 1 -r REPLY
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                echo -e "\n${YELLOW}Adding and committing changes...${NC}"
-                git add .
-                git commit -m "Deployment patch for branch: $branch"
-                
-                echo -e "\n${YELLOW}Pushing changes to remote...${NC}"
-                if git push; then
-                    echo -e "\n${GREEN}Push successful!${NC}"
-                    break
-                else
-                    echo -e "${RED}Error: Push failed. Please resolve conflicts or check your credentials.${NC}"
-                    exit 1
-                fi
-            elif [[ $REPLY =~ ^[Nn]$ ]]; then
-                echo -e "${YELLOW}Aborting push. Changes are not committed or pushed.${NC}"
+    while true; do
+        read -p "Do you want to commit and push changes? (y/n): " -n 1 -r REPLY
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "\n${YELLOW}Adding and committing changes...${NC}"
+            git add .
+            git commit -m "Deployment patch for branch: $branch"
+            
+            echo -e "\n${YELLOW}Pushing changes to remote...${NC}"
+            if git push; then
+                echo -e "\n${GREEN}Push successful!${NC}"
                 break
             else
-                echo -e "${RED}Invalid input. Please enter 'y' or 'n'.${NC}"
+                echo -e "${RED}Error: Push failed. Please resolve conflicts or check your credentials.${NC}"
+                exit 1
             fi
-        done
-    else
-        echo -e "${YELLOW}No changes detected. Nothing to commit or push.${NC}"
-    fi
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "${YELLOW}Aborting push. No changes were committed or pushed.${NC}"
+            break
+        else
+            echo -e "${RED}Invalid input. Please enter 'y' or 'n'.${NC}"
+        fi
+    done
 }
 
 # Main script logic
