@@ -17,7 +17,7 @@ function structure_menu_a() {
 
 function structure_menu_b() {
     echo "------------------------------------------"
-    echo "         STRUCTURE MENU - B"
+    echo "         STRUCTURE MENU"
     echo "------------------------------------------"
     echo "1) KNIME"
     echo "2) Python"
@@ -55,6 +55,7 @@ function prompt_one() {
     do
         structure_menu_a
         read choice
+        echo ""
         case "$choice" in
             1)
                 create-folder $db_path && create-file $filelist
@@ -84,23 +85,30 @@ function prompt_one() {
 # prompt 2
 
 function prompt_two() {
+    echo ""
     while true
     do
         structure_menu_b
         read choice2
+        echo ""
         case "$choice2" in
             1)
                 echo -e "Finsap3 or FINSAP7? (enter 3 or 7):"
                 read finsap
 
-                if [[ $finsap==3 ]]; then
+                if [[ $finsap -eq 3 ]]; then
                     create-folder $knime_f3 && create-file $knime_workspaces_txt
                     echo "Press any key to continue..."
                     read -n 1 -s
                     exit 0
-                else
+                elif [[ $finsap -eq 7 ]]; then
                     create-folder $knime_f7 && create-file $knime_workspaces_txt
+                    echo "Press any key to continue..."
+                    read -n 1 -s
                     exit 0
+                else
+                    clear
+                    echo "Invalid input!! try again..."
                 fi
                 ;;
             2)
